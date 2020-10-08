@@ -22,6 +22,45 @@ The package contains the following features:
 
 
 
+Putting the package on use
+__________________________
+
+There are two main classes in the package ``Waveguide`` and ``Simulation``. By calling the ``Waveguide`` instance, the waveguide can be created. Initially, it contains the following attributes:
+
+* height, width in micrometers;
+
+* substrate, core and cladding materials;
+
+- in the case of a rectandular cross-section there will be only the cladding;
+
+The ``Simulation`` class contains the parameters which define the simulation itself. They are as follows:
+
+* calculation units: wavelength, frequency and V-number;
+
+* start, stop, step, points, span (any three of choice).
+
+After the simulation has been initialised, and before it has been run, the waveguide obtains the following properties:
+
+* core, substrate, cladding permettivities and refractive indices.
+
+After the simulation is completed, the waveguide obtains another set of arguments:
+
+* propagation constant (``beta``);
+
+* effective index (``neff``);
+
+* group index (``ng``);
+
+* group delay dispersion (``GDD``);
+
+There parameters can be called as properties, or as methods pricising the calculation point::
+
+ng(wavelength=1.55)
+
+
+
+
+
 Features to come asap
 _____________________
 
@@ -31,15 +70,8 @@ _____________________
 
 
 
-Putting the package on use
-__________________________
-
-There are two main classes in the package ``Waveguide`` and ``Simulation``. By calling the ''Waveguide'' instance, the waveguide can be created. Initially, it contains the following attributes:
-- height, width in micrometers;
-- substrate, core and cladding materials;
-+ in the case of a rectandular cross-section there will be only the cladding;
 
 
 Installation 
 ____________
-via PyPI
+Installes via PyPI as 
