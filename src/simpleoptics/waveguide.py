@@ -27,9 +27,10 @@ class Waveguide:
 
     def __init__(self,  core   = None, cladding = None, substrate = None,
                         height = None, width = None,
-                        _start=[], _stop=[], _points=[]):
+                        _start=None, _stop=None, _points=None):
 
-        ''' the empty properties will be set after the simulation has been run '''
+        ''' the empty properties will be set after the simulation has been run,
+            so I do not see a possibility to set them '''
         self.substrate = substrate
         self.core = core
         self.cladding = cladding
