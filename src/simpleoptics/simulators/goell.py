@@ -1,16 +1,19 @@
 from simpleoptics.helpers.preambule import *
 
 class Simulation_Goell:
-    ''' the solver is borrowed from plandrem
-        (but it has been enhanced nevertheless!) '''
-    ''' can calculate a trapezoidal wg as well, purely.
-        Modeclass is the nonsense variable again, which is to be fixed!
-        '''
-    """ class 1 x- sym, y- sym modes Ex21, Ex23, Ey12, Ey32,... <- row remove
+    ''' The classic [Goell 1969] solver of the rectandular waveguide. 
+        The python realisation is borrowed from plandrem's github and been 
+        enhanced to be more versatile. Furthermore, this method can calculate 
+        a trapezoidal wg as well using a sidewall angle variable.
+
+    The correspondence between [Menon 2002] classes and Goell's are as follows
+        class 1 x- sym, y- sym modes Ex21, Ex23, Ey12, Ey32,... <- row remove
         class 2 x- sym, y-asym modes Ex22, Ex44, Ey11, Ey33,...
         class 3 x-asym, y- sym modes Ex11, Ex33, Ey22, Ey44,...
         class 4 x-asym, y-asym modes Ex12, Ex32, Ey21, Ey23,... <- row remove
-    """
+    
+     Modeclass is the nonsense variable again, which is to be fixed!
+    '''
     def __init__(self,  waveguide, modeclass, number_of_harmonics,
                         units, start=None, stop=None, points=None,
                         centre=None, span=None, step=None):
@@ -80,10 +83,11 @@ class Simulation_Goell:
                                else np.flipud(self.waveguide.cladding_epsr)
         epsr = epsr1/epsr0
 
-            # quelques désignations
+            # Abbrevations
         d = (a+b)/2
         Z0 = sqrt(mu0_umps/(eps0_umps*epsr0))
-        k0 = Vn*sqrt(epsr0)/(sqrt(epsr1-epsr0))       # = k_freespace*sqrt(epsr0)
+            # k_i = k_freespace*sqrt(epsr0)
+        k0 = Vn*sqrt(epsr0)/(sqrt(epsr1-epsr0))
         k1 = Vn*sqrt(epsr1)/(sqrt(epsr1-epsr0))
 
                 # Les points de correspondance
@@ -105,15 +109,17 @@ class Simulation_Goell:
         thetam=(m-0.5)*pi/(2*N)
         thetac = arctan(b/a)
 
-        # on utilise une masque
-        # R,T,rm seraient 0 si une expression entre parenthèses est " False "
-        ''' в этом месте я не понимаю как выводить, сверху мое снизу статья гоелла'''
-        ''' R=   sin(thetam)*(thetam<thetac) + cos(thetam+pi/4)*(thetam==thetac) -\
-            cos(thetam)*(thetam>thetac)
-            T =  cos(thetam)*(thetam<thetac) + cos(thetam-pi/4)*(thetam==thetac) +\
-             sin(thetam)*(thetam>thetac)
-            rm=a/cos(thetam)*(thetam<thetac) + sqrt(a**2+b**2)*(thetam==thetac) +\
-            b/sin(thetam)*(thetam>thetac) '''
+        # There's an inconsistency between my efforts to derive the following formulas
+        # and the final ones in [Goell 1969]. In fact, there are different versions
+        # whhich correspond more or less to my formulas, but I leave the original
+        # ones. Here are the mine:
+        # R=   sin(thetam)*(thetam<thetac) + cos(thetam+pi/4)*(thetam==thetac) -\
+        #     cos(thetam)*(thetam>thetac)
+        # T =  cos(thetam)*(thetam<thetac) + cos(thetam-pi/4)*(thetam==thetac) +\
+        #      sin(thetam)*(thetam>thetac)
+        # rm=a/cos(thetam)*(thetam<thetac) + sqrt(a**2+b**2)*(thetam==thetac) +\
+        #     b/sin(thetam)*(thetam>thetac)
+        
         # négatif test
         R=   sin(thetam)*(thetam<thetac) + cos(thetam+pi/4)*(thetam==thetac) +\
              cos(thetam)*(thetam>thetac)
@@ -189,12 +195,17 @@ class Simulation_Goell:
     def detQ(self,i,B2):
         dq = np.linalg.det(self.matriceQ(i,B2))
         return dq
-        # la valeur de coupure
+        
+        # In the original paper there was a necessity to cut the
+        # exorbitating det values. I haven't ever encountered such a behaviour
+        # during my studies, so I ignore it.
+        
     # # def detQ(B2,seuil=1e70):
     # #     dq = np.linalg.det(matriceQ(B2))
     # #     if abs(dq) > seuil:
     # #         return dq
     # #     else: return 0
+    
     ''' '''
         ## Solution
     ''' multimode Goell is abandonned in favour of using modenumber and setting
@@ -288,7 +299,7 @@ class Simulation_Goell:
 
         return None
 
-    ''' running the simulation and setting the waveguide instance properties '''
+    # Running the simulation and setting the waveguide instance properties
     def simulate(self, waveguide):
         waveguide.beta_normalised = self.betanorm(waveguide)
         waveguide.beta            = self.beta(waveguide)
