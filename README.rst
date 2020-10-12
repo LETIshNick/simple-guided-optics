@@ -74,4 +74,4 @@ _____________________
 
 Installation 
 ____________
-Installes via PyPI as 
+Can be installed via PyPI as  ``pip install simple-guided-optics-letishnick``
