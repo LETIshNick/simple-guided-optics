@@ -180,6 +180,7 @@ def blit(t):
 
     return y
 
+# # # This is what is left from the original code, useless for now
 
 # if __name__ == "__main__":
 #     from numpy import linspace
