@@ -3,16 +3,22 @@ from simpleoptics.helpers.preambule import *
 import warnings
 
 class Simulation_rectangular():
-    ''' two methods are implemented : Marcatili, Menon
+    ''' two methods are implemented : Marcatili, Menon. The latter
         can calculate a trapezoidal wg as well, using Menon+Barybin CMT
-        '''
-    '''
-    waveguide mode classes are as follows:
+        [Cheplagin, Zaretskaia 2018]
+    
+    Waveguide mode classes are as follows:
             /  I      Ex21, Ex23, Ey12, Ey32, ...
             |  II     Ex22, Ex44, Ey11, Ey33, ...
     Class: <
             |  III    Ex11, Ex33, Ey22, Ey44, ...
             \  IV     Ex12, Ex32, Ey21, Ey23, ...
+    
+    There is no possibility to arbitrary choose a mode. Though by changing the
+    modenumber variable it is possible to calculate the dispersion of a higher mode,
+    to attribute a particular mode to a particular class it is to the engineer itself.
+    But, I do not see the method in its current state be applied to thoroughly
+    calculate something other that Ex11 and Ey11 lowest-order modes.
     '''
 
     def __init__(self,  waveguide,
@@ -219,16 +225,16 @@ class Simulation_rectangular():
 
     ''' '''
         ## Initial value finder
-        #todo for now on it works only in the case of lowest-order modes
+#TODO for now on it works only in the case of lowest-order modes
 
-    ''' There is a huge problem here aboult the choice of mode designations.
+    ''' There is a huge problem here about the choice of mode designations.
             By default this solver searches for the lowest mode, which
             is ex11 and ey11 according to the method utilised.
-            It's OK with Marcatili where there is an evident separation between
-            two polarisations, whereas for Menon it's much worse as long as
+            It's OK with Marcatili because there is an evident separation between
+            two polarisations, whereas for Menon it is much worse as long as
             in each of 4 mode classes both ex and ey polarisations are present '''
 
-        #todo deal with mode designations
+#TODO deal with mode designations
     ''' The vague idea is to collect the values of solkx_test and solky_test
             which contain implicitly mode type and then attribute each of it to
             one of menon type. But how? One cannot clearly say which set of {kx,ky}
