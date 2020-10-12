@@ -1,11 +1,11 @@
 import setuptools
 
-with open("README.md", "r") as fh:
+with open("README.rst", "r") as fh:
     long_description = fh.read()
 
 setuptools.setup(
     name="simple-guided-optics_letishnick", # Replace with your own username
-    version="2020.10.7dev",
+    version="2020.10.8dev",
     author="Nick Cheplagin",
     author_email="letishnick@gmail.com",
     description="A package that provides several classic calculation methods for guided optics",
