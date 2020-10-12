@@ -5,22 +5,24 @@ import scipy as sp
 
     # Some signal treatment routines
 #TODO add the methods that unitilise these functions
-#TODO these are chirp calculation and pulse generation
+#TODO (needed for pulse propagation)
 from scipy.signal import convolve, gausspulse, chirp
 
-    # Ajustement de courbe
+    # Curve treatment, do not import for now
 #TODO add the methods that unitilise these functions
+#TODO (needed for my latest paper to treat the reflectogram)
+#TODO (don't see a necessity to keep in any more)
 # from lmfit import Minimizer, Parameters, report_fit, Model
 
 import warnings
 
-
-        ## Constantes physiques
+        ## Constants
 from scipy.constants import c
 from scipy.constants import pi
 from scipy.constants import epsilon_0
 from scipy.constants import mu_0
 
+    # aliases
 e = sp.exp(1)
 
 eps0 = epsilon_0
@@ -29,6 +31,7 @@ mu0 = mu_0
 eps0_umps = epsilon_0*1e30
 mu0_umps = mu_0*1e-18
 
+    # normalisation speeds of light
 c_nmps = 1e-3 /sp.sqrt(eps0*mu0)
 c_umps = 1e-6 /sp.sqrt(eps0*mu0)
 c_mps  = 1e-12/sp.sqrt(eps0*mu0)
@@ -42,7 +45,7 @@ from scipy.special import jv, kv, jvp, kvp, factorial
 from scipy.optimize import root, brentq
 
 
-        ## Additional useful unctions 
+    # Additional useful unctions 
     # general math
 def cot(x):
     return tan(x)**-1
@@ -51,10 +54,10 @@ def sec(x):
 def csc(x):
     return 1/sin(x) 
     
-        # these are traditional russian acronyms
+    # these are traditional russian acronyms, can't live without them sometimes
 sqrt=sp.emath.sqrt
-# ln=log
-# lg=log10
+ln=log
+lg=log10
 arctg=arctan
 
     # log10 values math
@@ -71,6 +74,8 @@ def normalized(x):
 
     # find nearest above = fna.
 ''' Ceci cherche l'indice du my_array qui correspond au valeur "target" '''
+''' This one looks for an index of my_array corresponding to a target value,
+    borrowed from stackexchange'''
 def fna(my_array, target):
     diff = my_array - target
     mask = np.ma.less_equal(diff, 0)
@@ -84,17 +89,17 @@ def fna(my_array, target):
 ''' '''
 
 
-
         ## Fourier
+    #TODO necessary for pulse propagation
 import scipy.fftpack as fft
 
-    # Transformation de Fourier
+    # Transformation de Fourier améliorée
 def FFT_t(A,n=None,ax=0):
     return fft.ifftshift(fft.ifft(fft.fftshift(A,axes=(ax,)),n,axis=ax),axes=(ax,))
 def IFFT_t(A,n=None,ax=0):
     return fft.ifftshift(fft.fft(fft.fftshift(A,axes=(ax,)),n,axis=ax),axes=(ax,))
 
-    # Fourier partial
+    # A partial Fourier transform
 def IFFT_partial(f, Hw, fs=None,
                  window=np.kaiser, N=12,
                  fft_pts=2**12):
@@ -141,10 +146,10 @@ def IFFT_partial(f, Hw, fs=None,
     if fs > f2:
         # Hw = both_side_padded(Hw)
 
-            # new freq array and the number of points to pad
+        # new freq array and the number of points to pad
         pad_left = len(fft_freqs[0:fna(fft_freqs, -f3)])
 
-        pad_right=pad_left - 1
+        pad_right = pad_left - 1
 
             # interpolating to usual frequencies
             # the number of interp points is that what's left
@@ -152,7 +157,7 @@ def IFFT_partial(f, Hw, fs=None,
         interpolator_re=InterpolatedUnivariateSpline(filtre_freq_array, filtre_Hw.real)
         interpolator_im=InterpolatedUnivariateSpline(filtre_freq_array, filtre_Hw.imag)
         freqs_interp=np.linspace(filtre_freq_array[0],
-                                filtre_freq_array[-1], interp_points)
+                                 filtre_freq_array[-1], interp_points)
         filtre_Hw_interp=interpolator_re(freqs_interp)+1j*interpolator_im(freqs_interp)
 
             # padding
@@ -168,7 +173,8 @@ def IFFT_partial(f, Hw, fs=None,
         # iFFTing
     Ht = IFFT_t(Hw*window_apod)
 
-        # Centre desplacement straight fft
+        # IF NEEDED, MAYBE NOT 
+        # The centre displacement of the straight fft
     # exp(-1j*2*pi*f3)*
 
     return np.array([t_ps, Ht])
@@ -179,14 +185,15 @@ def IFFT_partial(f, Hw, fs=None,
 
 
 
-        ## Interpolation
-from scipy.interpolate import InterpolatedUnivariateSpline # as interpolate_xy
+        ## Interpolation helper routines
+from scipy.interpolate import InterpolatedUnivariateSpline
 
     # Interponation of x and y in N points
 def interp_xypts(x_array, y_array, points, return_x=False):
 
-    ''' an envelope function that computes the interpolated array from the two
-        arrays. The ordinate and the abscissae are of the same size
+    ''' The envelope function that computes an interpolated array from the two
+        arrays. The ordinate and the abscissae are of the same size. 
+        Due to the restrictions of InterpolatedUnivariateSpline y have to increase
     '''
 
         # the array of new abscissae by the intended endpoints
@@ -206,7 +213,7 @@ def interp_xypts(x_array, y_array, points, return_x=False):
     else:
         return y_new
 
-    # Interponation to new x
+    # Interponation to a new x
 def interp_tonew_x(x_old, x_intended, y_array, points, return_x=False):
 
     ''' The envelope function that computes an interpolated array from two
@@ -251,11 +258,11 @@ def point_or_array_output(input_array,
     warned = False
 
         # interpolating
-    interp_lam =  np.linspace(input_lam[0], input_lam[-1], interp_points)
-    interp_V =    np.linspace(input_V[0], input_V[-1], interp_points)
+    interp_lam  = np.linspace(input_lam[0],  input_lam[-1],  interp_points)
+    interp_V    = np.linspace(input_V[0],    input_V[-1],    interp_points)
     interp_freq = np.linspace(input_freq[0], input_freq[-1], interp_points)
 
-        # neff values on particular points
+        # Values to output on particular points
     if wavelength_point != None:
         if (np.min(interp_lam) <= wavelength_point <= np.max(interp_lam)):
             returned_array = input_array[fna(interp_lam, wavelength_point)]
@@ -304,7 +311,8 @@ def point_or_array_output(input_array,
 
 
         ## Basiline removal
-#TODO useless for now
+#TODO useless for now, used once in the reflectogram treatment
+# newertheless, this is a cool procedure
 from scipy import sparse
 from scipy.sparse.linalg import spsolve
 
