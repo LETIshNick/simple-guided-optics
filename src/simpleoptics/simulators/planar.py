@@ -67,7 +67,6 @@ class Simulation_planar:
 
         ## DISPERSION
 
-
     ''' '''
 
     def __dispnormTE(self, waveguide, B2, i):
@@ -106,8 +105,8 @@ class Simulation_planar:
 
     ''' The initial value finder has been taken from plandrem github.
         It has been modified and hardcoded here and there, namely inside B2_test.
-        The biggest issue thouhg is that sometimes ch fails of finds more than
-        two roots. This case is left for posterior ameliorations '''
+        The biggest issue though is that sometimes ch fails; it finds more than
+        two roots. This case is left for posterior investigations '''
 
         ## initnal value finder
     def __initval(self, waveguide):
@@ -189,13 +188,13 @@ class Simulation_planar:
 
         return np.array([betanorm, beta, ky0, ky1, ky2])
 
-    ''' These can be calculated in two forms '''
-    ''' Pour pouvoir dessiner les champs il me faut les réticules des
+    ''' These can be calculated in two forms
+    Pour pouvoir dessiner les champs il me faut les réticules des
             coordonnées. D’ailleurs, dans le cas du guide d’onde planair je
             peux m’arranger seulument avec la ligne des Y.
             Je peux donc créer une méthode qui prendra
-            np.linspace comme l’argument '''
-    ''' Le guide d’onde, je n’en veux que les valeurs des champs. Par conséquent, je
+            np.linspace comme l’argument
+    Le guide d’onde, je n’en veux que les valeurs des champs. Par conséquent, je
         leur fourninai avec les propriétés waveguide.Ex(y)
         self.waveguide.Ex =
         Puisque cette appel consommera la ligne des Y fournie tout en produisant un
@@ -381,14 +380,6 @@ class Simulation_planar:
 
         ## SIMULATION
 
-
-    '''
-    Fields can be represented in different forms
-        ___0___
-           1
-        ⎺⎺⎺2⎺⎺⎺
-
-    '''
 
     ''' running the simulation and setting the waveguide instance properties,
         also translating it as the protected properties to the current simulation
